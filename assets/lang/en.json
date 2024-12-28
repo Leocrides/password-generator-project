@@ -3,5 +3,6 @@
     "headerTitle": "Password Length:",
     "passTitle": "Password:",
     "genePass": "Generate Password",
-    "inputLength": "Enter the password length."
+    "inputLengthPlace": "Enter the password length.",
+    "invalidNumber": "Type a valid number."
 }

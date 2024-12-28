@@ -2,28 +2,30 @@ const passwordInput = document.querySelector('.pass-input');
 const lengthInput = document.querySelector('.length-input');
 
 function generateRandomPassword(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+'
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
     let password = '';
     for (let i = 0; i < length; i++) {
         password += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    return password
+    return password;
 }
 
 document.addEventListener('click', e => {
     const el = e.target;
+    e.preventDefault();
     if (el.classList.contains('gene-pass')) {
         const length = parseInt(lengthInput.value);
         if (isNaN(lengthInput.value) || lengthInput.value <= 0) {
-            lengthInput.value = 'Insira um número válido.'
+            const errorMessage = window.translations ? window.translations.invalidNumber : 'Insira um número válido.';
+            lengthInput.value = errorMessage;
             setTimeout(() => {
                 lengthInput.value = '';
-            }, 2000)
-            lengthInput.focus()
+            }, 2000);
+            lengthInput.focus();
             return;
         }
         const newPassword = generateRandomPassword(length);
-        passwordInput.value = newPassword
+        passwordInput.value = newPassword;
     }
 });
 
@@ -33,7 +35,6 @@ window.addEventListener('load', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-
     async function translatePage(language) {
         try {
             const response = await fetch(`assets/lang/${language}.json`);
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const translations = await response.json();
+            window.translations = translations;
 
             document.querySelectorAll('[data-i18n-key]').forEach(element => {
                 const key = element.getAttribute('data-i18n-key');
@@ -52,13 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             });
-
-            document.title = translations.title || 'Password Generator'
-
         } catch (e) {
-            console.error('Error loading translations', e)
+            console.error('Error loading translations', e);
         }
     }
+
     const userLanguage = navigator.language || navigator.userLanguage;
     const language = userLanguage.startsWith('en') ? 'en' : 'pt';
     translatePage(language);
